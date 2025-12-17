@@ -24,10 +24,11 @@ submission {
     requireTests = false
 }
 
-tasks {
-    withType<GraderRunTask> {
-        doFirst {
-            throw GradleException("No public tests are provided for this exercise. For more information, please refer to the Moodle section 'Übungen' -> 'Informationen zu Tests'.")
+
+jagr {
+    graders {
+        val graderPublic by getting {
+            rubricProviderName.set("h10.H10_RubricProviderPublic")
         }
     }
 }

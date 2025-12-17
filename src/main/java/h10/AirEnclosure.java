@@ -12,14 +12,14 @@ public class AirEnclosure<TODO_REPLACE> {
     final StackOfObjects animals = null;
 
     @StudentImplementationRequired("H10.2.2")
-    @Override
+    // @Override
     public StackOfObjects getAnimals() {
         // TODO: H10.2.2
         return org.tudalgo.algoutils.student.Student.crash("H10.2.2 - Remove if implemented");
     }
 
     @StudentImplementationRequired("H10.2.2")
-    @Override
+    // @Override
     public void feed() {
         // TODO: H10.2.2
         org.tudalgo.algoutils.student.Student.crash("H10.2.2 - Remove if implemented");
