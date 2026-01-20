@@ -73,7 +73,7 @@ public class StackOfObjects<TODO_REPLACE> {
      * Removes the object at the top of this stack and returns it.
      *
      * @return The object at the top of this stack.
-     * @throws ArrayIndexOutOfBoundsException if this stack is empty.
+     * @throws IllegalStateException if this stack is empty.
      */
     @StudentImplementationRequired("H10.1") // TODO: H10.1
     public Object pop() {
@@ -94,7 +94,6 @@ public class StackOfObjects<TODO_REPLACE> {
      */
     @StudentImplementationRequired("H10.1") // TODO: H10.1
     public Object get(int index) {
-        validateIndex(index);
         return objects[index];
     }
 
@@ -112,7 +111,6 @@ public class StackOfObjects<TODO_REPLACE> {
     @StudentImplementationRequired("H10.1") // TODO: H10.1
     public Object set(int index, Object object) {
         checkNotNull(object);
-        validateIndex(index);
         Object oldObj = objects[index];
         objects[index] = object;
         return oldObj;
@@ -147,19 +145,6 @@ public class StackOfObjects<TODO_REPLACE> {
     }
 
     /**
-     * Checks if the specified index is valid for the current stack.
-     *
-     * @param index the index to check
-     * @throws IllegalArgumentException if the index is out of range
-     */
-    @DoNotTouch
-    private void validateIndex(int index) {
-        if (index < 0 || index >= objects.length) {
-            throw new IllegalArgumentException("invalid index for stack of size %d: %d".formatted(size(), index));
-        }
-    }
-
-    /**
      * Checks if the specified element is null.
      *
      * @param element the element to check
@@ -180,7 +165,7 @@ public class StackOfObjects<TODO_REPLACE> {
     @DoNotTouch
     private void checkNotEmpty() {
         if (size() <= 0) {
-            throw new IllegalStateException("stack is empty");
+            throw new IllegalStateException("Stack is empty");
         }
     }
 }
