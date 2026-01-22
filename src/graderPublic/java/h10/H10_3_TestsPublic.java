@@ -58,17 +58,23 @@ public class H10_3_TestsPublic {
 
         // wildcards
         Predicate<Type> superA = matchWildcard(false, aMatcher);
+        Predicate<Type> extendsE = matchWildcard(true, eMatcher);
+        Predicate<Type> extendsB = matchWildcard(true, bMatcher);
+
+        // Allow both exact type and wildcard variant
+        Predicate<Type> eOrExtendsE = eMatcher.or(extendsE);
+        Predicate<Type> bOrExtendsB = bMatcher.or(extendsB);
 
         assertParameters(
             mapFunctional,
             List.of(
-                // Supplier<E>
-                matchNested(Supplier.class, eMatcher),
+                // Supplier<E> or Supplier<? extends E>
+                matchNested(Supplier.class, eOrExtendsE),
 
-                // Function<? super A, B>
+                // Function<? super A, B> or Function<? super A, ? extends B>
                 matchNested(Function.class,
-                    superA,   // first parameter: ? super A
-                    bMatcher  // second parameter: B
+                    superA,       // first parameter: ? super A
+                    bOrExtendsB   // second parameter: B or ? extends B
                 )
             )
         );
