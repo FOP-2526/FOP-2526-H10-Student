@@ -45,9 +45,21 @@ public class H10_3_TestsPublic {
 
     @Test
     public void testMapFunctionalParameterPublic() {
-        // methode got B and E
-        TypeVariable<?> typeB = mapFunctional.getTypeParameters()[0];
-        TypeVariable<?> typeE = mapFunctional.getTypeParameters()[1];
+        // Method has two type parameters: B and E (order may vary)
+        TypeVariable<?> typeParam0 = mapFunctional.getTypeParameters()[0];
+        TypeVariable<?> typeParam1 = mapFunctional.getTypeParameters()[1];
+
+        // Determine which type parameter is E (extends Enclosure) and which is B (extends Animal)
+        // by checking their bounds
+        TypeVariable<?> typeE;
+        TypeVariable<?> typeB;
+        if (Arrays.stream(typeParam0.getBounds()).anyMatch(b -> b.getTypeName().contains("Enclosure"))) {
+            typeE = typeParam0;
+            typeB = typeParam1;
+        } else {
+            typeE = typeParam1;
+            typeB = typeParam0;
+        }
 
         // A from Enclosure<A>
         TypeVariable<?> typeA = Enclosure.class.getTypeParameters()[0];
@@ -58,17 +70,23 @@ public class H10_3_TestsPublic {
 
         // wildcards
         Predicate<Type> superA = matchWildcard(false, aMatcher);
+        Predicate<Type> extendsE = matchWildcard(true, eMatcher);
+        Predicate<Type> extendsB = matchWildcard(true, bMatcher);
+
+        // Allow both exact type and wildcard variant
+        Predicate<Type> eOrExtendsE = eMatcher.or(extendsE);
+        Predicate<Type> bOrExtendsB = bMatcher.or(extendsB);
 
         assertParameters(
             mapFunctional,
             List.of(
-                // Supplier<E>
-                matchNested(Supplier.class, eMatcher),
+                // Supplier<E> or Supplier<? extends E>
+                matchNested(Supplier.class, eOrExtendsE),
 
-                // Function<? super A, B>
+                // Function<? super A, B> or Function<? super A, ? extends B>
                 matchNested(Function.class,
-                    superA,   // first parameter: ? super A
-                    bMatcher  // second parameter: B
+                    superA,       // first parameter: ? super A
+                    bOrExtendsB   // second parameter: B or ? extends B
                 )
             )
         );
